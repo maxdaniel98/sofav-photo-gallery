@@ -1,0 +1,18 @@
+.sofav-photo-gallery-post {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.sofav-photo-gallery-post .sofav-photo-gallery__item {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+}
+
+.sofav-photo-gallery-post .sofav-photo-gallery__item img {
+    width:100%;
+    height:100%;
+    margin: auto;
+}
