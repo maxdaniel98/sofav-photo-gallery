@@ -44,7 +44,7 @@ let myDropzone = new Dropzone("#sofavPhotoGalleryUploader", {
             this.displayExistingFile({
                 name: existingImages[image].post_title,
                 attachment_id: existingImages[image].ID,
-            }, existingImages[image].guid);
+            }, existingImages[image].url);
         }
     }
 });
