@@ -42,7 +42,7 @@ let myDropzone = new Dropzone("#sofavPhotoGalleryUploader", {
 
         for (let image in existingImages){
             this.displayExistingFile({
-                name: existingImages[image].post_title,
+                name: existingImages[image].title,
                 attachment_id: existingImages[image].ID,
             }, existingImages[image].url);
         }
