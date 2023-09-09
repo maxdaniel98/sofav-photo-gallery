@@ -181,6 +181,8 @@ class SOFAV_Photo_Gallery
         if (!is_single('sofav-photo-gallery') && !in_the_loop() && !is_main_query())
             return $content;
 
+        if (post_password_required()) return;
+
         $images = $this->get_images_by_post('image', get_the_ID());
         $html = '<div class="sofav-photo-gallery-post">';
         foreach ($images as $image) {
