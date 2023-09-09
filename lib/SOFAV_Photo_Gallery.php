@@ -376,7 +376,8 @@ class SOFAV_Photo_Gallery
                 "guid" => $image->guid,
                 "url" => wp_get_attachment_image_url($image->ID, [255, 0]),
                 "title" => $image->post_title,
-                "alt" => get_post_meta($image->ID, '_wp_attachment_image_alt', true)
+                "alt" => get_post_meta($image->ID, '_wp_attachment_image_alt', true),
+                "size" => get_post_meta($image->ID, '_wp', true),
             ];
         }
         $current_post_id = $post ? $post->ID : '';
