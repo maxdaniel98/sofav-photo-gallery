@@ -16,6 +16,8 @@
  * Author:            Max van den Bosch (SOFAV)
  * Author URI:        https://sofav.nl/
  * Text Domain:       sofav-photo-gallery
+ * License:           GPL v3 or later
+ * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
  */
 
 // If this file is called directly, abort.
