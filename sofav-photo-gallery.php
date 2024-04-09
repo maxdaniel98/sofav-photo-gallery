@@ -10,7 +10,7 @@
  * Plugin Name:       SOFAV Photo Gallery
  * Plugin URI:        https://sofav.nl/wordpress-plugins/sofav-photo-gallery/
  * Description:       SOFAV Photo Gallery is a simple plugin to create a photo gallery.
- * Version:           0.2.3
+ * Version:           0.2.4
  * Requires at least: 5.2
  * Requires PHP:      7.2
  * Author:            Max van den Bosch (SOFAV)

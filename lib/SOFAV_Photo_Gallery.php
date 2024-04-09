@@ -178,8 +178,8 @@ class SOFAV_Photo_Gallery
 
     function frontendHtml($content)
     {
-        if (!is_single('sofav-photo-gallery') && !in_the_loop() && !is_main_query())
-            return $content;
+        // only change the content if it's a single post of the 'sofav-photo-gallery' post type
+        if (!is_singular('sofav-photo-gallery')) return $content;
 
         if (post_password_required()) return $content;
 
