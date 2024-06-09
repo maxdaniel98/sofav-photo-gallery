@@ -19,6 +19,7 @@ class SOFAV_Photo_Gallery
             add_action('admin_menu', [$this, 'add_import_page']);
         } else {
             add_filter('the_content', [$this, 'frontendHtml'], 1);
+            add_action('template_redirect', [$this, 'download_when_requested']);
         }
     }
 
@@ -45,7 +46,7 @@ class SOFAV_Photo_Gallery
         if (isset($_POST['submit'])) {
             return $this->handleSaveImportPage();
         }
-        return require_once(SOFAV_PHOTO_GALLERY_PLUGIN_DIR . 'templates/import-page.php');
+        return require_once (SOFAV_PHOTO_GALLERY_PLUGIN_DIR . 'templates/import-page.php');
     }
 
     public function handleSaveImportPage()
@@ -179,12 +180,19 @@ class SOFAV_Photo_Gallery
     function frontendHtml($content)
     {
         // only change the content if it's a single post of the 'sofav-photo-gallery' post type
-        if (!is_singular('sofav-photo-gallery')) return $content;
+        if (!is_singular('sofav-photo-gallery'))
+            return $content;
 
-        if (post_password_required()) return $content;
+        if (post_password_required())
+            return $content;
 
         $images = $this->get_images_by_post('image', get_the_ID());
-        $html = '<div class="sofav-photo-gallery-post">';
+        $html = '<div class="sofav-photo-gallery-post-toolbar">';
+        $html .= '<a href="' . add_query_arg('download', 'true') . '" class="sofav-photo-gallery-post-toolbar__item" download="' . get_the_title() . '.zip">' . _(
+            'Download all images'
+        ) . '</a>';
+        $html .= '</div>';
+        $html .= '<div class="sofav-photo-gallery-post">';
         foreach ($images as $image) {
             $html .= '<a href="' . $image->guid . '" class="sofav-photo-gallery__item" data-gallery="sofav-photo-gallery">';
             $html .= wp_get_attachment_image($image->ID, [255, 0]);
@@ -201,6 +209,38 @@ class SOFAV_Photo_Gallery
 
         return $content . $html;
     }
+    public function download_when_requested()
+    {
+        if (!isset($_GET['download']) || !is_singular('sofav-photo-gallery') || post_password_required())
+            return;
+
+        // Set timeout to 2 minutes to prevent the script from timing out and memory limit to 1024M
+        set_time_limit(120);
+        ini_set('memory_limit', '1024M');
+
+        // Get all images attached to the gallery
+        $getAllAttachments = get_attached_media('image', get_the_ID());
+        $attachments = array_values($getAllAttachments);
+
+        // Add all images to a zip file
+        $zip = new ZipArchive();
+        $zip_name = get_the_title() . '.zip';
+        $zip->open($zip_name, ZipArchive::CREATE);
+        foreach ($attachments as $attachment) {
+            $image_path = get_attached_file($attachment->ID);
+            $zip->addFile($image_path, $attachment->post_title . '.' . pathinfo($image_path, PATHINFO_EXTENSION));
+        }
+        $zip->close();
+
+        // Send the zip file to the browser
+        header('Content-Type: application/zip');
+        header('Content-Disposition: attachment; filename="' . $zip_name . '"');
+        header('Content-Length: ' . filesize($zip_name));
+        readfile($zip_name);
+        unlink($zip_name);
+        exit;
+    }
+
     public function removeAttachment()
     {
         $attachment_id = $_POST['attachment_id'];
@@ -382,7 +422,7 @@ class SOFAV_Photo_Gallery
         }
         $current_post_id = $post ? $post->ID : '';
 
-        return require_once(SOFAV_PHOTO_GALLERY_PLUGIN_DIR . 'templates/media-uploader.php');
+        return require_once (SOFAV_PHOTO_GALLERY_PLUGIN_DIR . 'templates/media-uploader.php');
     }
 
     private function get_images_by_post($type, $post)
@@ -398,16 +438,16 @@ class SOFAV_Photo_Gallery
             'post_type' => 'attachment',
             'post_mime_type' => $type,
             'posts_per_page' => -1,
-            'orderby' => 'post_title', 
+            'orderby' => 'post_title',
             'order' => 'ASC'
         );
         $args = apply_filters('get_attached_media_args', $args, $type, $post);
 
         $args['orderby'] = 'post_title'; // [1]
         $args['order'] = 'ASC'; // [1]
-        $children = get_children( $args );
-        
-        return (array) apply_filters( 'get_attached_media', $children, $type, $post );
+        $children = get_children($args);
+
+        return (array) apply_filters('get_attached_media', $children, $type, $post);
     }
 
     public function activate()
