@@ -188,7 +188,7 @@ class SOFAV_Photo_Gallery
 
         $images = $this->get_images_by_post('image', get_the_ID());
         $html = '<div class="sofav-photo-gallery-post-toolbar">';
-        $html .= '<a href="' . add_query_arg('download', 'true') . '" class="sofav-photo-gallery-post-toolbar__item" download="' . get_the_title() . '.zip">' . _(
+        $html .= '<a href="' . add_query_arg('download', 'true') . '" class="sofav-photo-gallery-post-toolbar__item">' . _(
             'Download all images'
         ) . '</a>';
         $html .= '</div>';
